@@ -30,14 +30,14 @@ But these metrics are threshold based, so we need to add another metric without 
 * Prepare cluster for parallel data processing, for faster response (2 weeks);
 * Set up process of continuous and efficient data acquisition for fast response (3 weeks).
 
-##### Modeling
+###### Modeling
 
 * Select validation strategy that will swill display real world metrics (1 week);
 * Select and prepare most import features from our data for robust ML model (2 weeks);
 * Learn baseline model on selected features for start point of model's quality (1 week);
 * Improve baseline model for reaching our metric goals (4 weeks). 
 
-##### MLOps
+###### MLOps
 
 * Define format of model answer which suits everyone (1 weeks);
 * Carry out load testing of the model in order to understand that the model is ready for production (2 week);
