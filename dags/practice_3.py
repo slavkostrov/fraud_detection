@@ -1,5 +1,5 @@
 """
-    Даг для обновления данных
+    Dag for daily data updating.
 """
 import datetime
 
@@ -19,11 +19,11 @@ with DAG(
             'email': ['slavkotrov@google.com'],
             'email_on_failure': True,
             'email_on_retry': False,
-            'retries': 1,
+            'retries': 3,
         },
         description='Simple ETL dag for practice_3.',
-        schedule_interval='0 0 1 * *',
-        start_date=datetime.datetime(2022, 7, 30, 0),
+        schedule_interval='@daily,
+        start_date=datetime.datetime(2022, 9, 4, 0),
         catchup=False,
         tags=['otus_practice'],
 ) as dag:
