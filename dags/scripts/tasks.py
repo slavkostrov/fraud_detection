@@ -1,3 +1,7 @@
+import findspark
+findspark.init()
+
+
 import datetime
 import os
 import random
@@ -7,6 +11,10 @@ import datetime
 import numpy as np
 import pandas as pd
 from airflow.models import Variable
+import pyspark.sql.functions as F
+from pyspark.ml.feature import StandardScaler
+from pyspark.ml.feature import VectorAssembler
+from pyspark.sql.window import Window
 
 
 def save_table(table, filename, output_prefix):
@@ -246,3 +254,87 @@ def add_frauds(customer_profiles_table, terminal_profiles_table, transactions_df
     print("Number of frauds from scenario 3: " + str(nb_frauds_scenario_3))
 
     return transactions_df
+
+def get_spark():
+    import findspark
+    findspark.init()
+
+    import pyspark
+    from pyspark import SparkConf
+
+    conf = SparkConf()
+    conf.setAppName('practice_4')
+    conf.set("spark.dynamicAllocation.enabled", "true")
+    conf.set("spark.sql.sources.partitionOverwriteMode", "dynamic")
+    conf.set("spark.driver.maxResultSize", "4G")
+    conf.set("spark.driver.memory", "4G")
+    conf.set("spark.executor.memory", "4G")
+    conf.set("spark.driver.allowMultipleContexts", "true")
+
+    spark = pyspark.sql.SparkSession.builder.config(conf=conf).getOrCreate()
+    return spark
+
+
+def get_max_data_date(spark, config):
+    try:
+        df = (
+            spark
+                .read
+                .parquet(
+                f"{config.output_prefix}features.parquet"
+            )
+                .select(
+                F.max("date")
+            )
+                .toPandas()
+        )
+        return df.iloc[:, 0].astype(str).max()
+    except:
+        return None
+
+
+def prepare_features(config):
+    spark = get_spark()
+    max_date = get_max_data_date(spark, config)
+
+    customer_window = Window.partitionBy("CUSTOMER_ID")
+    terminal_window = Window.partitionBy("TERMINAL_ID")
+
+    table = spark.read.parquet("./all_transactions_table.parquet")
+    if max_date is not None:
+        table = table.filter(F.col("date") > max_date)
+
+    prepared_table = (
+        table
+            .withColumn("f_mean_customer_TX_AMOUNT", F.mean(F.col("TX_AMOUNT")).over(customer_window))
+            .withColumn("f_mean_terminal_TX_AMOUNT", F.mean(F.col("TX_AMOUNT")).over(terminal_window))
+            .withColumn("f_unq_terminals_per_customer",
+                        F.approx_count_distinct(F.col("TERMINAL_ID")).over(terminal_window))
+            .withColumn(
+            "f_customer_amount_ratio",
+            F.col("TX_AMOUNT") / F.col("f_mean_customer_TX_AMOUNT")
+        )
+            .withColumn(
+            "f_terminal_amount_ratio",
+            F.col("TX_AMOUNT") / F.col("f_mean_terminal_TX_AMOUNT")
+        )
+            .withColumnRenamed("TX_AMOUNT", "f_TX_AMOUNT")
+            .withColumnRenamed("TX_TIME_SECONDS", "f_TX_TIME_SECONDS")
+    )
+
+    features = list(filter(lambda x: x.startswith("f_"), prepared_table.columns))
+    vec_assembler = VectorAssembler(inputCols=features, outputCol="features")
+    prepared_table = vec_assembler.transform(prepared_table)
+
+    scaler = StandardScaler(
+        inputCol="features",
+        outputCol="scaledFeatures",
+        withStd=True,
+        withMean=True
+    )
+
+    scalerModel = scaler.fit(prepared_table)
+    prepared_table = scalerModel.transform(prepared_table)
+    prepared_dataset = prepared_table.select("scaledFeatures", "TX_FRAUD", "date")
+
+    prepared_dataset.write.mode("OVERWRITE").partitionBy("date").parquet(f"{config.output_prefix}features.parquet")
