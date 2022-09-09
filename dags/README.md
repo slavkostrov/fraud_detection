@@ -18,3 +18,14 @@ DAG:
 Variables:
 
 ![изображение](https://user-images.githubusercontent.com/64536258/188732498-83b0c045-3fee-43b9-bf34-8dbdd2a7f39b.png)
+
+## Dag for daily feature calculations.
+
+In daily data update added task, that trigger feature preparation dag via TriggerDagRunOperator. Data preparation dag has only one task, that calc features and save them to hdfs partitioned by date.
+
+DAG:
+
+![изображение](https://user-images.githubusercontent.com/64536258/189437637-e52fd396-d359-4fcc-8aee-08d6a18547e8.png)
+![изображение](https://user-images.githubusercontent.com/64536258/189437560-402e7343-2936-4d9d-9362-da19d8236f3c.png)
+
+Notebook with feature engineering ![link](https://github.com/slavkostrov/fraud_detection/blob/6d3ec2b1c162b9fd2414d193c84d6c5aa2804795/notebooks/practice_4.ipynb)
