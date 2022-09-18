@@ -1,3 +1,6 @@
+import findspark
+findspark.init()
+
 import os
 
 import mlflow
@@ -22,15 +25,16 @@ def get_spark():
     conf.set("spark.driver.memory", "4G")
     conf.set("spark.executor.memory", "4G")
     conf.set("spark.driver.allowMultipleContexts", "true")
+    conf.set("spark.jars.packages", "")
 
     spark = pyspark.sql.SparkSession.builder.config(conf=conf).getOrCreate()
     
     return spark
 
 
-if __name__ == "__main__":
-    # enable pyspark autologs, metrics logging disabled for custom names
+def train(*args, **kwargs):    
     spark = get_spark()
+    # enable pyspark autologs, metrics logging disabled for custom names
     mlflow.pyspark.ml.autolog(log_post_training_metrics=False)
     
     # set tracking uri (localhost for education)
@@ -39,7 +43,7 @@ if __name__ == "__main__":
     # set exp name
     mlflow.set_experiment("fraud_transaction_model_evaluation")
 
-    with mlflow.start_run(desctiption="practice_5_model_evaluation") as active_run:
+    with mlflow.start_run(description="practice_5_model_evaluation") as active_run:
         features = spark.read.parquet("practice_1/features.parquet")
         features = features.drop("date")
 
