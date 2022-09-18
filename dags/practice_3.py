@@ -1,5 +1,5 @@
 """
-    Dag for daily data updating.
+    Даг для обновления данных
 """
 import datetime
 
@@ -7,6 +7,7 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from scripts.tasks import *
 
 from config import BaseETLConfig
@@ -19,11 +20,11 @@ with DAG(
             'email': ['slavkotrov@google.com'],
             'email_on_failure': True,
             'email_on_retry': False,
-            'retries': 3,
+            'retries': 1,
         },
         description='Simple ETL dag for practice_3.',
-        schedule_interval='@daily,
-        start_date=datetime.datetime(2022, 9, 4, 0),
+        schedule_interval='@daily',
+        start_date=datetime.datetime(2022, 9, 4, 10),
         catchup=False,
         tags=['otus_practice'],
 ) as dag:
@@ -64,6 +65,10 @@ with DAG(
         bash_command="python /home/ubuntu/airflow/dags/scripts/save_partition.py",
     )
 
-    check_date_task >> [gen_profiles_task, gen_terminals_task] >> gen_transactions_task
-    gen_transactions_task >> add_fraud_task >> save_partition >> end_task
+    run_features_preparation = TriggerDagRunOperator(
+        task_id="run_features_preparation",
+        trigger_dag_id="practice_4"
+    )
 
+    check_date_task >> [gen_profiles_task, gen_terminals_task] >> gen_transactions_task
+    gen_transactions_task >> add_fraud_task >> save_partition >> run_features_preparation >> end_task
