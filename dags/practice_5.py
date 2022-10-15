@@ -7,6 +7,7 @@ from airflow import DAG
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 from scripts.model_train import train
+from scripts.model_validation import val
 
 from config import BaseETLConfig
 config = BaseETLConfig()
@@ -36,6 +37,12 @@ with DAG(
         task_id="train_model",
     )
 
+    validate = PythonOperator(
+        python_callable=val,
+        op_kwargs={"config": config},
+        task_id="validate_model",
+    )
+    
     end_task = EmptyOperator(task_id="end")
 
-    start_task >> train_eval_model >> end_task
+    start_task >> train_eval_model >> validate >> end_task
