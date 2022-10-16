@@ -7,6 +7,7 @@ jobs:
     environment: practice_7
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
