@@ -33,7 +33,7 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
-        pytest
+        pytest ../tests
       continue-on-error: true
     -
       name: Set up QEMU
