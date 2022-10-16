@@ -35,6 +35,13 @@ jobs:
       # You may pin to the exact commit or the version.
       # uses: dariocurr/pytest-summary@9cdbcd0634fade9eb80209e687508b876be804fc
       uses: dariocurr/pytest-summary@v1
+      env:
+        MLFLOW_S3_ENDPOINT_URL: ${{ secrets.MLFLOW_S3_ENDPOINT_URL }} 
+        AWS_S3_ENDPOINT_URL: ${{ secrets.AWS_S3_ENDPOINT_URL }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        MLFLOW_URI: ${{ secrets.MLFLOW_URI }}
+        TTTEST: 1
 
     -
       name: Set up QEMU
