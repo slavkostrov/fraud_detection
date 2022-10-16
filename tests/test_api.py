@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 import os
 
 import sys
-sys.path.append("../fastapi_practice/")
+sys.path.append("/home/runner/work/fraud_detection/fraud_detection/fastapi_practice/")
 
 from main import app
 
