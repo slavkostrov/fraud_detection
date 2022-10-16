@@ -16,10 +16,14 @@ MODEL_NAME = os.getenv("MODEL_NAME", default="fraud_detection_sklearn_model")
 MODEL_VERSION = os.getenv("MODEL_VERSION", default="latest")
 
 mlflow.set_tracking_uri(os.getenv("MLFLOW_URI"))
-# os.environ["AWS_ACCESS_KEY_ID"] = ""
-# os.environ["AWS_SECRET_ACCESS_KEY"] = ""
-# os.environ["MLFLOW_S3_ENDPOINT_URL"] = ""
-# os.environ["AWS_S3_ENDPOINT_URL"] = ""
+if (
+    os.getenv("AWS_ACCESS_KEY_ID") is None or 
+    os.getenv("AWS_SECRET_ACCESS_KEY") is None or
+    os.getenv("MLFLOW_S3_ENDPOINT_URL") is None or
+    os.getenv("MLFLOW_URI") is None or
+    os.getenv("AWS_S3_ENDPOINT_URL") is None
+):
+    raise RuntimeError("Missing env variable (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, MLFLOW_S3_ENDPOINT_URL, AWS_S3_ENDPOINT_URL, MLFLOW_URI).")
 
 
 class Model:
