@@ -29,7 +29,7 @@ def test_predict():
     for i in range(10):
         transaction_id = random.randint(1, 100)
         response = client.post(
-            f"/predict?transaction_id={transaction_id}",
+            f"/predict?transaction_id={transaction_id}/",
             headers={"Content-Type": "application/json", "accept": "application/json"},
             json={
                 "TX_AMOUNT": random.random() * 1000,
