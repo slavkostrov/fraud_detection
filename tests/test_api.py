@@ -46,5 +46,5 @@ def test_errors():
                            data="{" + f'"TX_AMOUNT": xxx, "TX_TIME_SECONDS": {random.random()}, '
                                       f'"TERMINAL_ID": zzz, "CUSTOMER_ID": yyy' + "}")
 
-    assert not ok
+    assert not response.ok
     assert response.status_code == 422
