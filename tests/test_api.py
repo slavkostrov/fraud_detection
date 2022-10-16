@@ -30,7 +30,7 @@ def test_predict():
     for i in range(10):
         transaction_id = random.randint(1, 100)
         response = requests.post(
-            f'http://testserver/predict?transaction_id={transaction_id}',
+            f'{client.base_url}/predict?transaction_id={transaction_id}',
             data="{" + f'"TX_AMOUNT": {random.random()}, "TX_TIME_SECONDS": {random.random()}, "TERMINAL_ID": {random.random()}, '
                        f'"CUSTOMER_ID": {random.random()}' + "}",
             headers={"Content-Type": "application/json", "accept": "application/json"}
@@ -45,7 +45,7 @@ def test_predict():
 
 def test_errors():
     response = requests.post(
-        'http://testserver/predict?transaction_id=1',
+        f'{client.base_url}/predict?transaction_id=1',
         data="{" + f'"TX_AMOUNT": x, "TX_TIME_SECONDS": {random.random()}, "TERMINAL_ID": {random.random()}, '
                    f'"CUSTOMER_ID": z' + "}",
         headers={"Content-Type": "application/json", "accept": "application/json"}
