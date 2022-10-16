@@ -1,7 +1,7 @@
 import random
 import sys
 
-import pytest
+import requests
 from fastapi.testclient import TestClient
 
 sys.path.append("/home/runner/work/fraud_detection/fraud_detection/fastapi_practice/")
@@ -29,34 +29,26 @@ def test_predict():
     import time
     for i in range(10):
         transaction_id = random.randint(1, 100)
-        response = client.post(
-            f"/predict/",
-            headers={"Content-Type": "application/json", "accept": "application/json"},
-            json={
-                "transaction_id": transaction_id,
-                "TX_AMOUNT": random.random() * 1000,
-                "TX_TIME_SECONDS": random.random() * 1000,
-                "TERMINAL_ID": random.random() * 1000,
-                "CUSTOMER_ID": random.random() * 1000
-            },
+        response = requests.post(
+            f'http://localhost:8000/predict?transaction_id={transaction_id}',
+            data="{" + f'"TX_AMOUNT": {random.random()}, "TX_TIME_SECONDS": {random.random()}, "TERMINAL_ID": {random.random()}, '
+                       f'"CUSTOMER_ID": {random.random()}' + "}",
+            headers={"Content-Type": "application/json", "accept": "application/json"}
         )
+
         print(response.json())
-        assert response.status_code == 200
+        assert response.ok == 200
         assert response.json()['is_fraud'] in [0, 1]
 
         time.sleep(3)
 
 
 def test_errors():
-    response = client.post(
-        f"/predict?transaction_id=1",
-        headers={"Content-Type": "application/json", "accept": "application/json"},
-        json={
-            "TX_AMOUNT": "x",
-            "TX_TIME_SECONDS": random.random() * 1000,
-            "TERMINAL_ID": "y",
-            "CUSTOMER_ID": random.random() * 1000
-        },
+    response = requests.post(
+        f'http://localhost:8000/predict?transaction_id=1}',
+        data="{" + f'"TX_AMOUNT": x, "TX_TIME_SECONDS": {random.random()}, "TERMINAL_ID": {random.random()}, '
+                   f'"CUSTOMER_ID": z' + "}",
+        headers={"Content-Type": "application/json", "accept": "application/json"}
     )
 
-    assert response.status_code != 200
+    assert response.status_code == 422
