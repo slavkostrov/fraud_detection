@@ -26,6 +26,7 @@ def test_read_main():
 
 
 def test_predict():
+    import time
     for i in range(10):
         transaction_id = random.randint(1, 100)
         response = client.post(
@@ -42,6 +43,8 @@ def test_predict():
         print(response.json())
         assert response.status_code == 200
         assert response.json()['is_fraud'] in [0, 1]
+
+        time.sleep(3)
 
 
 def test_errors():
