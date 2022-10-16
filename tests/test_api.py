@@ -45,7 +45,7 @@ def test_predict():
 
 def test_errors():
     response = requests.post(
-        f'http://localhost:8000/predict?transaction_id=1}',
+        'http://localhost:8000/predict?transaction_id=1',
         data="{" + f'"TX_AMOUNT": x, "TX_TIME_SECONDS": {random.random()}, "TERMINAL_ID": {random.random()}, '
                    f'"CUSTOMER_ID": z' + "}",
         headers={"Content-Type": "application/json", "accept": "application/json"}
