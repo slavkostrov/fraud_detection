@@ -9,4 +9,3 @@ class BaseETLConfig:
     output_prefix: str = "/user/ubuntu/practice_1/"
 
     radius: float = 3
-
