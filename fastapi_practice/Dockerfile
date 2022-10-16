@@ -16,8 +16,6 @@ RUN pip install "uvicorn[standard]"
 
 # 
 COPY ./main.py /code/app/main.py
-COPY ./terminal_features.parquet /code/
-COPY ./customer_features.parquet /code/
 
 # 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
