@@ -35,7 +35,7 @@ def test_predict():
                        f'"TERMINAL_ID": {random.random()}, "CUSTOMER_ID": {random.random()}' + "}")
 
         print(response.json())
-        assert response.ok == 200
+        assert response.ok
         assert response.json()['is_fraud'] in [0, 1]
 
         time.sleep(3)
@@ -46,4 +46,5 @@ def test_errors():
                            data="{" + f'"TX_AMOUNT": xxx, "TX_TIME_SECONDS": {random.random()}, '
                                       f'"TERMINAL_ID": zzz, "CUSTOMER_ID": yyy' + "}")
 
+    assert not ok
     assert response.status_code == 422
