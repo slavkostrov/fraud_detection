@@ -16,9 +16,8 @@ def func(x):
 def test_answer():
     assert func(3) == 4
 
-
-load_model()
 load_features()
+load_model()
 client = TestClient(app)
 
 
