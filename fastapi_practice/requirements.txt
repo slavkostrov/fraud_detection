@@ -6,3 +6,7 @@ typing-extensions==4.3.0
 pandas 
 numpy
 pydantic
+pyarrow
+boto3
+fastapi
+uvicorn[standard]
