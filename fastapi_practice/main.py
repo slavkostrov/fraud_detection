@@ -54,8 +54,9 @@ if (
     raise RuntimeError(
         "Missing env variable (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, MLFLOW_S3_ENDPOINT_URL, AWS_S3_ENDPOINT_URL, MLFLOW_URI).")
 
-if os.getenv("MLFLOW_URI") is None and current_environment():
+if os.getenv("MLFLOW_URI") is None and current_environment() == "PROD":
     raise RuntimeError("Setup `MLFLOW_URI` for production env to get_models.")
+
 
 class Model:
     pipeline: Optional[Pipeline] = None
