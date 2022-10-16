@@ -13,7 +13,7 @@ jobs:
         python-version: 3.8
         
     - name: Test env vars for python
-      run: python -c 'import os;print(os.environ);print(os.system("pwd"))'
+      run: python -c 'import os;print(os.environ);print(os.system("pwd"));print(os.system("ls"))'
       env:
         MLFLOW_S3_ENDPOINT_URL: ${{ secrets.MLFLOW_S3_ENDPOINT_URL }} 
         AWS_S3_ENDPOINT_URL: ${{ secrets.AWS_S3_ENDPOINT_URL }}
