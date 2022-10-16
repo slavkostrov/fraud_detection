@@ -20,6 +20,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         MLFLOW_URI: ${{ secrets.MLFLOW_URI }}
+        TTTEST: 1
     -
       name: Set up QEMU
       uses: docker/setup-qemu-action@v2
