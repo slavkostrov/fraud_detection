@@ -31,7 +31,7 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest
-        pytest tests/
+        pytest
     -
       name: Set up QEMU
       uses: docker/setup-qemu-action@v2
