@@ -60,4 +60,4 @@ jobs:
       with:
         push: true
         context: "{{defaultContext}}:fastapi_practice"
-        tags: slavkostrov/fraud_model:$GITHUB_REF_NAME
+        tags: slavkostrov/fraud_model:${{  github.ref_name }}
