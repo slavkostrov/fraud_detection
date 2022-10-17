@@ -1,6 +1,9 @@
 name: python
 
-on: push
+on:
+  push:
+    tags:
+      - '*.*.*'
 
 jobs:
   test_env:
@@ -39,6 +42,10 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         MLFLOW_URI: ${{ secrets.MLFLOW_URI }}
 
+  
+    - name: Set env
+      run: echo ::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF})
+
     -
       name: Set up QEMU
       uses: docker/setup-qemu-action@v2
@@ -57,4 +64,4 @@ jobs:
       with:
         push: true
         context: "{{defaultContext}}:fastapi_practice"
-        tags: slavkostrov/fraud_model:latest
+        tags: slavkostrov/fraud_model:$RELEASE_VERSION
