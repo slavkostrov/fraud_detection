@@ -10,3 +10,5 @@ pyarrow
 boto3
 fastapi
 uvicorn[standard]
+starlette_exporter
+prometheus_client
