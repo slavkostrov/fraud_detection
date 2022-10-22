@@ -152,8 +152,8 @@ def read_healthcheck():
 @app.post("/predict")
 def predict(transaction_id: int, transaction: Transaction) -> Dict:
     """main interface for inference."""
-    TERMINAL_COUNTER.labels(customer_id=Transaction.dict()["TERMINAL_ID"]).inc()
-    CUSTOMER_COUNTER.labels(customer_id=Transaction.dict()["CUSTOMER_ID"]).inc()
+    TERMINAL_COUNTER.labels(terminal_id=transaction.dict()["TERMINAL_ID"]).inc()
+    CUSTOMER_COUNTER.labels(customer_id=transaction.dict()["CUSTOMER_ID"]).inc()
 
     predictions = _predict(transaction_id, transaction)
     if predictions["is_fraud"]:
