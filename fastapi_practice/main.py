@@ -37,10 +37,10 @@ app.add_middleware(PrometheusMiddleware)
 app.add_route("/metrics", handle_metrics)
 
 REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
-HTTP_EXCEPTION_COUNTER = Counter('http_exceptions_count', 'Description of counter')
-FRAUD_COUNTER = Counter('fraud_count', 'Description of counter')
-CUSTOMER_COUNTER = Counter('customer_count', 'Description of counter', ["customer_id"])
-TERMINAL_COUNTER = Counter('terminal_count', 'Description of counter', ["terminal_id"])
+HTTP_EXCEPTION_COUNTER = Counter('http_exceptions_count', 'Count of exceptions')
+FRAUD_COUNTER = Counter('fraud_count', 'Counts of fraud')
+CUSTOMER_COUNTER = Counter('customer_count', 'Counts of customers', ["customer_id"])
+TERMINAL_COUNTER = Counter('terminal_count', 'Counts of terminals', ["terminal_id"])
 
 
 def _load_model():
