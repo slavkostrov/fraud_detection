@@ -39,8 +39,8 @@ app.add_route("/metrics", handle_metrics)
 REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
 HTTP_EXCEPTION_COUNTER = Counter('http_exceptions_count', 'Description of counter')
 FRAUD_COUNTER = Counter('fraud_count', 'Description of counter')
-CUSTOMER_COUNTER = Counter('customer_count', 'Description of counter')
-TERMINAL_COUNTER = Counter('terminal_count', 'Description of counter')
+CUSTOMER_COUNTER = Counter('customer_count', 'Description of counter', ["customer_id"])
+TERMINAL_COUNTER = Counter('terminal_count', 'Description of counter', ["terminal_id"])
 
 
 def _load_model():
