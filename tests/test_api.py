@@ -7,7 +7,14 @@ from fastapi.testclient import TestClient
 sys.path.append("/home/runner/work/fraud_detection/fraud_detection/fastapi_practice/")
 
 from main import app, load_model, load_features
+from prometheus_client import Summary, Counter
+from starlette_exporter import PrometheusMiddleware, handle_metrics
 
+REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
+HTTP_EXCEPTION_COUNTER = Counter('http_exceptions_count', 'Description of counter')
+FRAUD_COUNTER = Counter('fraud_count', 'Description of counter')
+CUSTOMER_COUNTER = Counter('customer_count', 'Description of counter')
+TERMINAL_COUNTER = Counter('terminal_count', 'Description of counter')
 
 def func(x):
     return x + 1
