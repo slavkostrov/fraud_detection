@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: fraud
-          image: slavkostrov/fraud_model:latest
+          image: slavkostrov/fraud_model:v.0.0.13
           ports:
             - containerPort: 8000
           env:
