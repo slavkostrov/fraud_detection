@@ -1,6 +1,9 @@
 name: python
 
-on: push
+on:
+  push:
+    tags:
+      - 'v*.*.*'
 
 jobs:
   test_env:
@@ -57,4 +60,4 @@ jobs:
       with:
         push: true
         context: "{{defaultContext}}:fastapi_practice"
-        tags: slavkostrov/fraud_model:latest
+        tags: slavkostrov/fraud_model:${{  github.ref_name }}
