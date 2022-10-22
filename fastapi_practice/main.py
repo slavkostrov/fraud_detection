@@ -33,14 +33,14 @@ if os.getenv("MLFLOW_URI") is None and current_environment() == "PROD":
     raise RuntimeError("Setup `MLFLOW_URI` for production env to get_models.")
 
 app = FastAPI()
-# app.add_middleware(PrometheusMiddleware)
-# app.add_route("/metrics", handle_metrics)
+app.add_middleware(PrometheusMiddleware)
+app.add_route("/metrics", handle_metrics)
 
-# REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
-# HTTP_EXCEPTION_COUNTER = Counter('http_exceptions_count', 'Description of counter')
-# FRAUD_COUNTER = Counter('fraud_count', 'Description of counter')
-# CUSTOMER_COUNTER = Counter('customer_count', 'Description of counter')
-# TERMINAL_COUNTER = Counter('terminal_count', 'Description of counter')
+REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
+HTTP_EXCEPTION_COUNTER = Counter('http_exceptions_count', 'Description of counter')
+FRAUD_COUNTER = Counter('fraud_count', 'Description of counter')
+CUSTOMER_COUNTER = Counter('customer_count', 'Description of counter')
+TERMINAL_COUNTER = Counter('terminal_count', 'Description of counter')
 
 
 def _load_model():
@@ -91,8 +91,8 @@ class Transaction(BaseModel):
     CUSTOMER_ID: int
 
 
-# @HTTP_EXCEPTION_COUNTER.count_exceptions(HTTPException)
-# @REQUEST_TIME.time()
+@HTTP_EXCEPTION_COUNTER.count_exceptions(HTTPException)
+@REQUEST_TIME.time()
 def _predict(transaction_id: int, transaction: Transaction) -> Dict:
     df = pd.DataFrame([transaction.dict()])
     if Model.pipeline is None:
@@ -152,10 +152,10 @@ def read_healthcheck():
 @app.post("/predict")
 def predict(transaction_id: int, transaction: Transaction) -> Dict:
     """main interface for inference."""
-    # TERMINAL_COUNTER.labels(customer_id=Transaction.TERMINAL_ID).inc()
-    # CUSTOMER_COUNTER.labels(customer_id=Transaction.CUSTOMER_ID).inc()
+    TERMINAL_COUNTER.labels(customer_id=Transaction.dict()["TERMINAL_ID"]).inc()
+    CUSTOMER_COUNTER.labels(customer_id=Transaction.dict()["CUSTOMER_ID"]).inc()
 
     predictions = _predict(transaction_id, transaction)
-    # if predictions["is_fraud"]:
-    #    FRAUD_COUNTER.inc()
+    if predictions["is_fraud"]:
+        FRAUD_COUNTER.inc()
     return predictions
