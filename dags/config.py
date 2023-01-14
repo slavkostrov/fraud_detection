@@ -10,3 +10,4 @@ class BaseETLConfig:
 
     radius: float = 3
     num_val_days: int = 3
+
